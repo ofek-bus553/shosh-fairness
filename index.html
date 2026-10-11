@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>שושים · טבלת צדק</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { font-family:'Rubik',-apple-system,'Segoe UI',Arial,sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(160deg,#fdf2f8 0%,#eff6ff 30%,#ecfdf5 62%,#fffbeb 100%);
+    background-attachment: fixed;
+    color:#1e293b;
+    padding: calc(20px + env(safe-area-inset-top)) 14px calc(34px + env(safe-area-inset-bottom));
+  }
+  .wrap { max-width:480px; margin:0 auto; }
+  .card {
+    background: rgba(255,255,255,.62);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.85);
+    border-radius: 26px;
+    box-shadow: 0 10px 34px rgba(100,116,180,.13);
+    padding: 20px 18px;
+    margin-bottom: 16px;
+  }
+  header.card { text-align:center; padding:26px 18px 22px; }
+  h1 { font-size:30px; font-weight:800; letter-spacing:-.3px;
+       background: linear-gradient(90deg,#be185d,#6d28d9,#0369a1);
+       -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { margin-top:6px; font-size:14px; color:#64748b; font-weight:500; }
+  h2 { font-size:17px; font-weight:700; color:#334155; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  h2 .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+
+  /* ---- fairness table ---- */
+  .frow { display:flex; align-items:center; gap:10px; padding:9px 2px; }
+  .frow + .frow { border-top:1px solid rgba(148,163,184,.16); }
+  .chip {
+    flex:none; min-width:64px; text-align:center;
+    border-radius:999px; padding:5px 12px; font-weight:700; font-size:15px;
+  }
+  .bar-wrap { flex:1; height:10px; border-radius:999px; background:rgba(148,163,184,.18); overflow:hidden; }
+  .bar { height:100%; border-radius:999px; }
+  .counts { flex:none; width:118px; text-align:left; font-size:12px; color:#475569; font-weight:500; line-height:1.4; white-space:nowrap; }
+  .counts b { font-size:16px; color:#0f172a; font-weight:800; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:12px; color:#64748b; }
+  .legend span { display:flex; align-items:center; gap:5px; }
+  .sw { width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+  /* ---- schedule ---- */
+  .erow { display:flex; align-items:center; gap:10px; padding:10px 2px; }
+  .erow + .erow { border-top:1px solid rgba(148,163,184,.16); }
+  .date { flex:none; width:88px; }
+  .date b { display:block; font-size:17px; font-weight:800; color:#0f172a; font-variant-numeric:tabular-nums; }
+  .date span { font-size:12px; color:#64748b; font-weight:500; }
+  .who { flex:1; display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+  .who .chip { min-width:0; padding:3px 11px; font-size:13.5px; }
+  .note { font-size:12px; color:#94a3b8; font-weight:500; flex-basis:100%; }
+  .erow.off  .date b { color:#94a3b8; }
+  .erow.past .date b { color:#94a3b8; }
+  .erow.past { opacity:.72; }
+  .off-pill { font-size:13px; font-weight:600; color:#64748b; background:rgba(148,163,184,.16); border-radius:999px; padding:4px 13px; }
+  .all-pill { font-size:13px; font-weight:700; color:#0f766e; background:#ccfbf1; border-radius:999px; padding:4px 13px; }
+  .stamp {
+    display:inline-block; color:#dc2626; border:2px solid #dc2626; border-radius:8px;
+    padding:1px 11px; font-size:12.5px; font-weight:700; transform:rotate(-3deg);
+    background:rgba(254,226,226,.55);
+  }
+
+  /* ---- tal ---- */
+  .tal li { font-size:14.5px; color:#334155; font-weight:500; margin:7px 0; padding-right:2px; list-style:none;
+            display:flex; gap:9px; align-items:flex-start; line-height:1.5; }
+  .tal li::before { content:""; flex:none; width:8px; height:8px; border-radius:50%; background:#c2410c; margin-top:7px; }
+
+  /* ---- update note ---- */
+  .how { font-size:13.5px; color:#475569; line-height:1.65; font-weight:500; }
+  .how b { color:#0f172a; }
+  .updated { text-align:center; font-size:12px; color:#94a3b8; margin-top:4px; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="card">
+    <h1>טבלת הצדק של השושים</h1>
+    <div class="sub">מחזור ל״ו · מי עשה, מי משובץ, וכמה יוצא לכל אחד</div>
+  </header>
+
+  <section class="card">
+    <h2><span class="dot" style="background:#6d28d9"></span>החלוקה ההוגנת</h2>
+    <div id="fair"></div>
+    <div class="legend">
+      <span><span class="sw" style="background:#94a3b8"></span>עבר = שוש שעבר</span>
+      <span><span class="sw" style="background:#38bdf8"></span>מתוכנן = שיבוץ קדימה</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:#0369a1"></span>כל התאריכים</h2>
+    <div id="sched"></div>
+  </section>
+
+
+  <div class="updated" id="upd"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  const chip = n => {
+    const c = COMMANDERS[n] || {bg:"#f1f5f9", fg:"#334155"};
+    return `<span class="chip" style="background:${c.bg};color:${c.fg}">${n}</span>`;
+  };
+
+  // --- fairness ---
+  const stats = {};
+  for (const n of Object.keys(COMMANDERS)) stats[n] = { past:0, future:0 };
+  const groups = {};
+  for (const e of EVENTS) {
+    if (e.type !== "past" && e.type !== "duty") continue;
+    for (const n of e.who) {
+      if (!stats[n]) continue;
+      const key = n + "|" + (e.stay || e.date);
+      (groups[key] = groups[key] || { n, types: [] }).types.push(e.type);
+    }
+  }
+  for (const g of Object.values(groups)) {
+    // a commander on several dates of the same weekend-stay (טל, 22-23/10) counts once
+    if (g.types.length > 1) {
+      if (g.types.includes("past")) stats[g.n].past++; else stats[g.n].future++;
+    }
+    else if (g.types[0] === "past") stats[g.n].past++;
+    else stats[g.n].future++;
+  }
+  const rows = Object.entries(stats)
+    .map(([n,s]) => ({ n, ...s, total: s.past + s.future }))
+    .sort((a,b) => b.total - a.total);
+  const max = Math.max(...rows.map(r => r.total), 1);
+  document.getElementById("fair").innerHTML = rows.map(r => {
+    const c = COMMANDERS[r.n];
+    return `<div class="frow">
+      ${chip(r.n)}
+      <div class="bar-wrap"><div class="bar" style="width:${Math.round(r.total/max*100)}%;background:${c.fg}"></div></div>
+      <div class="counts"><b>${r.total}</b> שושים<br>${r.past} עבר · ${r.future} מתוכנן</div>
+    </div>`;
+  }).join("");
+
+  // --- schedule ---
+  document.getElementById("sched").innerHTML = EVENTS.map(e => {
+    let body = "";
+    if (e.type === "duty" || e.type === "past") body = e.who.map(chip).join("");
+    else if (e.type === "all") body = `<span class="all-pill">כולם נשארים</span>`;
+    else body = `<span class="off-pill">אין שיבוץ</span>`;
+    if (e.tag) body += ` <span class="stamp">${e.tag}</span>`;
+    const note = e.note ? `<span class="note">${e.note}</span>` : "";
+    return `<div class="erow ${e.type}">
+      <div class="date"><b>${e.date}</b><span>${e.day}</span></div>
+      <div class="who">${body}${note}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("upd").textContent = "עודכן לאחרונה: " + UPDATED_AT;
+})();
+</script>
+</body>
+</html>
